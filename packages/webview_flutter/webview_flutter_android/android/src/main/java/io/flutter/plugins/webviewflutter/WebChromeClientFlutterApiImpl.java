@@ -172,8 +172,13 @@ public class WebChromeClientFlutterApiImpl extends WebChromeClientFlutterApi {
       @NonNull WebChromeClient instance,
       @NonNull ConsoleMessage message,
       @NonNull Reply<Void> callback) {
+    final Long id = instanceManager.getIdentifierForStrongReference(instance);
+    if (id == null) {
+      return;
+    }
+
     super.onConsoleMessage(
-        Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(instance)),
+        id,
         new GeneratedAndroidWebView.ConsoleMessage.Builder()
             .setLineNumber((long) message.lineNumber())
             .setMessage(message.message())
