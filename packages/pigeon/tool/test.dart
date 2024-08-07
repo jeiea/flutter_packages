@@ -9,6 +9,8 @@
 ///
 /// usage: dart run tool/test.dart
 ////////////////////////////////////////////////////////////////////////////////
+library;
+
 import 'dart:io' show Platform, exit;
 import 'dart:math';
 
@@ -78,6 +80,10 @@ ${parser.usage}''');
       iOSSwiftUnitTests,
       iOSSwiftIntegrationTests,
     ];
+    const List<String> linuxTests = <String>[
+      linuxUnitTests,
+      linuxIntegrationTests,
+    ];
     const List<String> macOSTests = <String>[
       macOSObjCIntegrationTests,
       macOSSwiftUnitTests,
@@ -104,6 +110,7 @@ ${parser.usage}''');
       testsToRun = <String>[
         ...dartTests,
         ...androidTests,
+        ...linuxTests,
       ];
     } else {
       print('Unsupported host platform.');

@@ -6,6 +6,7 @@ package io.flutter.plugins.googlemaps;
 
 import android.content.Context;
 import android.graphics.Rect;
+import androidx.annotation.Nullable;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -22,11 +23,14 @@ class GoogleMapBuilder implements GoogleMapOptionsSink {
   private boolean trafficEnabled = false;
   private boolean buildingsEnabled = true;
   private Object initialMarkers;
+  private Object initialClusterManagers;
   private Object initialPolygons;
   private Object initialPolylines;
   private Object initialCircles;
+  private Object initialHeatmaps;
   private List<Map<String, ?>> initialTileOverlays;
   private Rect padding = new Rect(0, 0, 0, 0);
+  private @Nullable String style;
 
   GoogleMapController build(
       int id,
@@ -42,12 +46,15 @@ class GoogleMapBuilder implements GoogleMapOptionsSink {
     controller.setTrafficEnabled(trafficEnabled);
     controller.setBuildingsEnabled(buildingsEnabled);
     controller.setTrackCameraPosition(trackCameraPosition);
+    controller.setInitialClusterManagers(initialClusterManagers);
     controller.setInitialMarkers(initialMarkers);
     controller.setInitialPolygons(initialPolygons);
     controller.setInitialPolylines(initialPolylines);
     controller.setInitialCircles(initialCircles);
+    controller.setInitialHeatmaps(initialHeatmaps);
     controller.setPadding(padding.top, padding.left, padding.bottom, padding.right);
     controller.setInitialTileOverlays(initialTileOverlays);
+    controller.setMapStyle(style);
     return controller;
   }
 
@@ -160,6 +167,11 @@ class GoogleMapBuilder implements GoogleMapOptionsSink {
   }
 
   @Override
+  public void setInitialClusterManagers(Object initialClusterManagers) {
+    this.initialClusterManagers = initialClusterManagers;
+  }
+
+  @Override
   public void setInitialPolygons(Object initialPolygons) {
     this.initialPolygons = initialPolygons;
   }
@@ -175,7 +187,17 @@ class GoogleMapBuilder implements GoogleMapOptionsSink {
   }
 
   @Override
+  public void setInitialHeatmaps(Object initialHeatmaps) {
+    this.initialHeatmaps = initialHeatmaps;
+  }
+
+  @Override
   public void setInitialTileOverlays(List<Map<String, ?>> initialTileOverlays) {
     this.initialTileOverlays = initialTileOverlays;
+  }
+
+  @Override
+  public void setMapStyle(@Nullable String style) {
+    this.style = style;
   }
 }

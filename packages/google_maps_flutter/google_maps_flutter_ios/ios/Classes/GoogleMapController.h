@@ -4,10 +4,13 @@
 
 #import <Flutter/Flutter.h>
 #import <GoogleMaps/GoogleMaps.h>
+
+#import "FGMClusterManagersController.h"
 #import "GoogleMapCircleController.h"
 #import "GoogleMapMarkerController.h"
 #import "GoogleMapPolygonController.h"
 #import "GoogleMapPolylineController.h"
+#import "messages.g.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,8 +22,6 @@ NS_ASSUME_NONNULL_BEGIN
                     registrar:(NSObject<FlutterPluginRegistrar> *)registrar;
 - (void)showAtOrigin:(CGPoint)origin;
 - (void)hide;
-- (void)animateWithCameraUpdate:(GMSCameraUpdate *)cameraUpdate;
-- (void)moveWithCameraUpdate:(GMSCameraUpdate *)cameraUpdate;
 - (nullable GMSCameraPosition *)cameraPosition;
 @end
 

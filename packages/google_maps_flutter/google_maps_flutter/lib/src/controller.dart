@@ -4,7 +4,7 @@
 
 // ignore_for_file: library_private_types_in_public_api
 
-part of google_maps_flutter;
+part of '../google_maps_flutter.dart';
 
 /// Controller for a single GoogleMap instance running on the host platform.
 class GoogleMapController {
@@ -136,6 +136,17 @@ class GoogleMapController {
         .updateCircles(circleUpdates, mapId: mapId);
   }
 
+  /// Updates heatmap configuration.
+  ///
+  /// Change listeners are notified once the update has been made on the
+  /// platform side.
+  ///
+  /// The returned [Future] completes after listeners have been notified.
+  Future<void> _updateHeatmaps(HeatmapUpdates heatmapUpdates) {
+    return GoogleMapsFlutterPlatform.instance
+        .updateHeatmaps(heatmapUpdates, mapId: mapId);
+  }
+
   /// Updates tile overlays configuration.
   ///
   /// Change listeners are notified once the update has been made on the
@@ -190,9 +201,15 @@ class GoogleMapController {
   /// Also, refer [iOS](https://developers.google.com/maps/documentation/ios-sdk/style-reference)
   /// and [Android](https://developers.google.com/maps/documentation/android-sdk/style-reference)
   /// style reference for more information regarding the supported styles.
+  @Deprecated('Use GoogleMap.style instead.')
   Future<void> setMapStyle(String? mapStyle) {
     return GoogleMapsFlutterPlatform.instance
         .setMapStyle(mapStyle, mapId: mapId);
+  }
+
+  /// Returns the last style error, if any.
+  Future<String?> getStyleError() {
+    return GoogleMapsFlutterPlatform.instance.getStyleError(mapId: mapId);
   }
 
   /// Return [LatLngBounds] defining the region that is visible in a map.

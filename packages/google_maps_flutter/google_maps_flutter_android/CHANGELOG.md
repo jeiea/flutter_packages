@@ -1,3 +1,63 @@
+## 2.13.0
+
+* Adds support for heatmap layers.
+
+## 2.12.2
+
+* Updates the example app to use TLHC mode, per current package guidance.
+
+## 2.12.1
+
+* Updates lint checks to ignore NewerVersionAvailable.
+
+## 2.12.0
+
+* Converts Java->Dart calls to Pigeon.
+
+## 2.11.1
+
+* Fixes handling of Circle updates.
+
+## 2.11.0
+
+* Converts additional platform calls to Pigeon.
+
+## 2.10.0
+
+* Converts some platform calls to Pigeon.
+
+## 2.9.1
+
+* Converts inspector interface platform calls to Pigeon.
+
+## 2.9.0
+
+* Adds support for BitmapDescriptor classes `AssetMapBitmap` and `BytesMapBitmap`.
+
+## 2.8.1
+
+* Updates minimum supported SDK version to Flutter 3.22/Dart 3.4.
+* Removes support for apps using the v1 Android embedding.
+
+## 2.8.0
+
+* Adds support for marker clustering.
+
+## 2.7.0
+
+* Adds support for `MapConfiguration.style`.
+* Adds support for `getStyleError`.
+* Updates minimum supported SDK version to Flutter 3.13/Dart 3.1.
+* Updates compileSdk version to 34.
+
+## 2.6.2
+
+* Updates minimum required plugin_platform_interface version to 2.1.7.
+
+## 2.6.1
+
+* Fixes new lint warnings.
+
 ## 2.6.0
 
 * Fixes missing updates in TLHC mode.

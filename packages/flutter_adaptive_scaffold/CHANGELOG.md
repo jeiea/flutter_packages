@@ -1,3 +1,38 @@
+## 0.1.11+1
+
+* Allows custom animation duration for the NavigationRail and 
+  BottomNavigationBar transitions. [flutter/flutter#112938](https://github.com/flutter/flutter/issues/112938)
+
+## 0.1.11
+
+* Updates minimum supported SDK version to Flutter 3.19/Dart 3.3.
+* Migrates deprecated MaterialState and MaterialStateProperty to WidgetState and WidgetStateProperty.
+
+## 0.1.10+2
+
+* Reduce rebuilds when invoking `isActive` method.
+
+## 0.1.10+1
+
+* Removes a broken design document link from the README.
+
+## 0.1.10
+
+* FIX : Assertion added when tried with less than 2 destinations - [flutter/flutter#110902](https://github.com/flutter/flutter/issues/110902)
+
+## 0.1.9
+
+* FIX : Drawer stays open even on destination tap - [flutter/flutter#141938](https://github.com/flutter/flutter/issues/141938)
+* Updates minimum supported SDK version to Flutter 3.13/Dart 3.1.
+
+## 0.1.8
+
+* Adds `transitionDuration` parameter for specifying how long the animation should be.
+
+## 0.1.7+2
+
+* Fixes new lint warnings.
+
 ## 0.1.7+1
 
 * Adds pub topics to package metadata.

@@ -8,13 +8,9 @@ A Flutter plugin for launching a URL.
 
 |             | Android | iOS   | Linux | macOS  | Web | Windows     |
 |-------------|---------|-------|-------|--------|-----|-------------|
-| **Support** | SDK 16+ | 11.0+ | Any   | 10.14+ | Any | Windows 10+ |
+| **Support** | SDK 16+ | 12.0+ | Any   | 10.14+ | Any | Windows 10+ |
 
-## Usage
-
-To use this plugin, add `url_launcher` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/).
-
-### Example
+## Example
 
 <?code-excerpt "lib/basic.dart (basic-example)"?>
 ```dart
@@ -97,6 +93,13 @@ Example:
 See
 [the Android documentation](https://developer.android.com/training/package-visibility/use-cases)
 for examples of other queries.
+
+### Web
+
+Some web browsers may have limitations (e.g. a launch must be triggered by a
+user action). Check
+[package:url_launcher_web](https://pub.dev/packages/url_launcher_web#limitations-on-the-web-platform)
+for more web-specific information.
 
 ## Supported URL schemes
 

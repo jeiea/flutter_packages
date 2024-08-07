@@ -4,6 +4,7 @@
 
 package io.flutter.plugins.googlemaps;
 
+import androidx.annotation.Nullable;
 import com.google.android.gms.maps.model.LatLngBounds;
 import java.util.List;
 import java.util.Map;
@@ -48,11 +49,17 @@ interface GoogleMapOptionsSink {
 
   void setInitialMarkers(Object initialMarkers);
 
+  void setInitialClusterManagers(Object initialClusterManagers);
+
   void setInitialPolygons(Object initialPolygons);
 
   void setInitialPolylines(Object initialPolylines);
 
   void setInitialCircles(Object initialCircles);
 
+  void setInitialHeatmaps(Object initialHeatmaps);
+
   void setInitialTileOverlays(List<Map<String, ?>> initialTileOverlays);
+
+  void setMapStyle(@Nullable String style);
 }

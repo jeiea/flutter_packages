@@ -1,6 +1,7 @@
-## NEXT
+## 2.4.0
 
-* Updates minimum supported SDK version to Flutter 3.10/Dart 3.0.
+* Adds `SharedPreferencesAsyncWindows` API.
+* Updates minimum supported SDK version to Flutter 3.16/Dart 3.2.
 
 ## 2.3.2
 
