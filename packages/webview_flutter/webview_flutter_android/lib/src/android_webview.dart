@@ -524,6 +524,11 @@ class CookieManager extends JavaObject {
     return _cookieManagerApi.removeAllCookiesFromInstances(this);
   }
 
+  /// Ensure persisting cookies.
+  Future<void> flush() async {
+    await _cookieManagerApi.flushFromInstances(this);
+  }
+
   /// Sets whether the WebView should allow third party cookies to be set.
   ///
   /// Apps that target `Build.VERSION_CODES.KITKAT` or below default to allowing

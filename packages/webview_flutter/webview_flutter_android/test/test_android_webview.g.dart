@@ -106,6 +106,9 @@ abstract class TestCookieManagerHostApi {
   /// Handles Dart method `CookieManager.removeAllCookies`.
   Future<bool> removeAllCookies(int identifier);
 
+  /// Handles Dart method `CookieManager.flush`.
+  void flush(int identifier);
+
   /// Handles Dart method `CookieManager.setAcceptThirdPartyCookies`.
   void setAcceptThirdPartyCookies(
       int identifier, int webViewIdentifier, bool accept);
@@ -184,6 +187,29 @@ abstract class TestCookieManagerHostApi {
               'Argument for dev.flutter.pigeon.webview_flutter_android.CookieManagerHostApi.removeAllCookies was null, expected non-null int.');
           final bool output = await api.removeAllCookies(arg_identifier!);
           return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.webview_flutter_android.CookieManagerHostApi.flush',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.webview_flutter_android.CookieManagerHostApi.flush was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final int? arg_identifier = (args[0] as int?);
+          assert(arg_identifier != null,
+              'Argument for dev.flutter.pigeon.webview_flutter_android.CookieManagerHostApi.flush was null, expected non-null int.');
+          api.flush(arg_identifier!);
+          return <Object?>[];
         });
       }
     }

@@ -1515,6 +1515,11 @@ class CookieManagerHostApiImpl extends CookieManagerHostApi {
   }
 
   /// Helper method to convert instance ids to objects.
+  Future<void> flushFromInstances(CookieManager instance) {
+    return flush(instanceManager.getIdentifier(instance)!);
+  }
+
+  /// Helper method to convert instance ids to objects.
   Future<void> setAcceptThirdPartyCookiesFromInstances(
     CookieManager instance,
     WebView webView,

@@ -429,6 +429,30 @@ class CookieManagerHostApi {
     }
   }
 
+  /// Handles Dart method `CookieManager.flush`.
+  Future<void> flush(int arg_identifier) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.webview_flutter_android.CookieManagerHostApi.flush',
+        codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList =
+        await channel.send(<Object?>[arg_identifier]) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else {
+      return;
+    }
+  }
+
   /// Handles Dart method `CookieManager.setAcceptThirdPartyCookies`.
   Future<void> setAcceptThirdPartyCookies(
       int arg_identifier, int arg_webViewIdentifier, bool arg_accept) async {

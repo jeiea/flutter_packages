@@ -178,6 +178,9 @@ abstract class CookieManagerHostApi {
   @async
   bool removeAllCookies(int identifier);
 
+  /// Handles Dart method `CookieManager.flush`.
+  void flush(int identifier);
+
   /// Handles Dart method `CookieManager.setAcceptThirdPartyCookies`.
   void setAcceptThirdPartyCookies(
     int identifier,

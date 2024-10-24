@@ -98,6 +98,13 @@ public class CookieManagerHostApiImpl implements CookieManagerHostApi {
   }
 
   @Override
+  public void flush(@NonNull Long identifier) {
+    if (sdkChecker.sdkIsAtLeast(Build.VERSION_CODES.LOLLIPOP)) {
+      getCookieManagerInstance(identifier).flush();
+    }
+  }
+
+  @Override
   public void setAcceptThirdPartyCookies(
       @NonNull Long identifier, @NonNull Long webViewIdentifier, @NonNull Boolean accept) {
     if (sdkChecker.sdkIsAtLeast(Build.VERSION_CODES.LOLLIPOP)) {
