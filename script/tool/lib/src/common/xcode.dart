@@ -115,6 +115,10 @@ class Xcode {
       project.path,
     ]);
     if (result.exitCode != 0) {
+      final dynamic err = result.stderr;
+      if (err is String) {
+        printError(err);
+      }
       return null;
     }
     Map<String, dynamic>? projectInfo;
