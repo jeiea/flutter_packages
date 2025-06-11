@@ -22,18 +22,37 @@ class WebViewImpl: WKWebView {
       }
 
       if #available(iOS 17.2, *) {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)),
-                                               name: UIResponder.keyboardWillShowNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)),
-                                               name: UIResponder.keyboardWillHideNotification,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+          self, selector: #selector(keyboardWillShow(notification:)),
+          name: UIResponder.keyboardWillShowNotification,
+          object: nil)
+        NotificationCenter.default.addObserver(
+          self, selector: #selector(keyboardWillHide(notification:)),
+          name: UIResponder.keyboardWillHideNotification,
+          object: nil)
       }
     #endif
   }
 
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+
+  override public var frame: CGRect {
+    get {
+      return super.frame
+    }
+    set {
+      super.frame = newValue
+
+      scrollView.contentInset = .zero
+      if scrollView.adjustedContentInset != .zero {
+        let insetToAdjust = scrollView.adjustedContentInset
+        scrollView.contentInset = UIEdgeInsets(
+          top: -insetToAdjust.top, left: -insetToAdjust.left,
+          bottom: -insetToAdjust.bottom, right: -insetToAdjust.right)
+      }
+    }
   }
 
   override func observeValue(
@@ -51,19 +70,20 @@ class WebViewImpl: WKWebView {
   @objc func keyboardWillShow(notification: NSNotification) {
     // UIResponder.keyboardWillShowNotification will be fired also
     // when changing focus between HTML inputs with the keyboard already open
-    if (scrollView.adjustedContentInset != .zero) {
+    if scrollView.adjustedContentInset != .zero {
       // if resizeToAvoidBottomInset is false on Flutter side,
       // scrollView.adjustedContentInset.bottom will be > 0
       if scrollView.adjustedContentInset.bottom > 0 {
-          // if the scrollView.contentInset has already been fixed, do nothing
-          if !_scrollViewContentInsetAdjusted {
-              _scrollViewContentInsetAdjusted = true
-              let insetToAdjust = scrollView.adjustedContentInset
-              scrollView.contentInset = UIEdgeInsets(top: -insetToAdjust.top, left: -insetToAdjust.left,
-                                                      bottom: -insetToAdjust.bottom, right: -insetToAdjust.right)
-          }
+        // if the scrollView.contentInset has already been fixed, do nothing
+        if !_scrollViewContentInsetAdjusted {
+          _scrollViewContentInsetAdjusted = true
+          let insetToAdjust = scrollView.adjustedContentInset
+          scrollView.contentInset = UIEdgeInsets(
+            top: -insetToAdjust.top, left: -insetToAdjust.left,
+            bottom: -insetToAdjust.bottom, right: -insetToAdjust.right)
+        }
       } else {
-          scrollView.contentInset = .zero
+        scrollView.contentInset = .zero
       }
     }
   }
