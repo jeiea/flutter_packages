@@ -1561,6 +1561,9 @@ abstract class PigeonApiCookieManager(
       callback: (Result<Boolean>) -> Unit
   )
 
+  /** Flushes the cookie store. */
+  abstract fun flush(pigeon_instance: android.webkit.CookieManager)
+
   /** Sets whether the `WebView` should allow third party cookies to be set. */
   abstract fun setAcceptThirdPartyCookies(
       pigeon_instance: android.webkit.CookieManager,
@@ -1652,6 +1655,29 @@ abstract class PigeonApiCookieManager(
                 reply.reply(AndroidWebkitLibraryPigeonUtils.wrapResult(data))
               }
             }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel =
+            BasicMessageChannel<Any?>(
+                binaryMessenger,
+                "dev.flutter.pigeon.webview_flutter_android.CookieManager.flush",
+                codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val pigeon_instanceArg = args[0] as android.webkit.CookieManager
+            val wrapped: List<Any?> =
+                try {
+                  api.flush(pigeon_instanceArg)
+                  listOf(null)
+                } catch (exception: Throwable) {
+                  AndroidWebkitLibraryPigeonUtils.wrapError(exception)
+                }
+            reply.reply(wrapped)
           }
         } else {
           channel.setMessageHandler(null)

@@ -1495,6 +1495,22 @@ class CookieManager extends PigeonInternalProxyApiBaseClass {
     return pigeonVar_replyValue! as bool;
   }
 
+  /// Flushes the cookie store.
+  Future<void> flush() async {
+    final _PigeonInternalProxyApiBaseCodec pigeonChannelCodec = _pigeonVar_codecCookieManager;
+    final BinaryMessenger? pigeonVar_binaryMessenger = pigeon_binaryMessenger;
+    const pigeonVar_channelName = 'dev.flutter.pigeon.webview_flutter_android.CookieManager.flush';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[this]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+
+    _extractReplyValueOrThrow(pigeonVar_replyList, pigeonVar_channelName, isNullValid: true);
+  }
+
   /// Sets whether the `WebView` should allow third party cookies to be set.
   Future<void> setAcceptThirdPartyCookies(WebView webView, bool accept) async {
     final _PigeonInternalProxyApiBaseCodec pigeonChannelCodec = _pigeonVar_codecCookieManager;

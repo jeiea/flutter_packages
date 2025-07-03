@@ -45,6 +45,11 @@ abstract class PlatformWebViewCookieManager extends PlatformInterface {
   /// The parameters used to initialize the [PlatformWebViewCookieManager].
   final PlatformWebViewCookieManagerCreationParams params;
 
+  /// Flushes the cookie store.
+  Future<void> flush() {
+    throw UnimplementedError('flush is not implemented on the current platform');
+  }
+
   /// Clears all cookies for all [WebView] instances.
   ///
   /// Returns true if cookies were present before clearing, else false.
