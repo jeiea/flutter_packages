@@ -63,6 +63,11 @@ class AndroidWebViewCookieManager extends PlatformWebViewCookieManager {
     );
   }
 
+  /// Ensure persisting cookies.
+  Future<void> flush() async {
+    await _cookieManager.flush();
+  }
+
   bool _isValidPath(String path) {
     // Permitted ranges based on RFC6265bis: https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-02#section-4.1.1
     for (final int char in path.codeUnits) {

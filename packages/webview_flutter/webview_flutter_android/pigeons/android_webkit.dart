@@ -244,6 +244,9 @@ abstract class CookieManager {
   @async
   bool removeAllCookies();
 
+  /// Flushes the cookie store.
+  void flush();
+
   /// Sets whether the `WebView` should allow third party cookies to be set.
   void setAcceptThirdPartyCookies(WebView webView, bool accept);
 }

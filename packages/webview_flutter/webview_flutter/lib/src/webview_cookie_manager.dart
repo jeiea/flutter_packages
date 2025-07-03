@@ -82,6 +82,9 @@ class WebViewCookieManager {
   /// Returns true if cookies were present before clearing, else false.
   Future<bool> clearCookies() => platform.clearCookies();
 
+  /// Flushes the cookie store.
+  Future<void> flush() => platform.flush();
+
   /// Sets a cookie for all WebView instances.
   ///
   /// This is a no op on iOS versions below 11.

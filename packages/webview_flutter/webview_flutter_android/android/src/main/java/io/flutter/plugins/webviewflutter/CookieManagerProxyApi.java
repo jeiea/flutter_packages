@@ -48,6 +48,11 @@ public class CookieManagerProxyApi extends PigeonApiCookieManager {
   }
 
   @Override
+  public void flush(@NonNull CookieManager pigeon_instance) {
+    pigeon_instance.flush();
+  }
+
+  @Override
   public void setAcceptThirdPartyCookies(
       @NonNull CookieManager pigeon_instance, @NonNull WebView webView, boolean accept) {
     pigeon_instance.setAcceptThirdPartyCookies(webView, accept);
