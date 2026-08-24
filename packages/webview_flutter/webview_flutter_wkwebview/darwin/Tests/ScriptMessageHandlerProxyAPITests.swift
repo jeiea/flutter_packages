@@ -27,6 +27,20 @@ class ScriptMessageHandlerProxyAPITests: XCTestCase {
 
     XCTAssertEqual(api.didReceiveScriptMessageArgs, [controller, message])
   }
+
+  @MainActor func testDidReceiveScriptMessageIsIgnoredAfterRegistrarIsDeallocated() {
+    let api = TestScriptMessageHandlerApi()
+    var registrar: TestProxyApiRegistrar? = TestProxyApiRegistrar()
+    let instance = ScriptMessageHandlerImpl(api: api, registrar: registrar!)
+    weak let weakRegistrar = registrar
+
+    registrar = nil
+    XCTAssertNil(weakRegistrar)
+
+    instance.userContentController(WKUserContentController(), didReceive: WKScriptMessage())
+
+    XCTAssertNil(api.didReceiveScriptMessageArgs)
+  }
 }
 
 class TestScriptMessageHandlerApi: PigeonApiProtocolWKScriptMessageHandler {

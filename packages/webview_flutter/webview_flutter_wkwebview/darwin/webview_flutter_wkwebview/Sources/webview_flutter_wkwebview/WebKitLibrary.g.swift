@@ -657,13 +657,14 @@ open class WebKitLibraryPigeonProxyApiRegistrar {
     PigeonApiSecTrust.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: nil)
     PigeonApiSecCertificate.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: nil)
     PigeonApiUIColor.setUpMessageHandlers(binaryMessenger: binaryMessenger, api: nil)
+    _codec = nil
   }
 }
 private class WebKitLibraryPigeonInternalProxyApiCodecReaderWriter: FlutterStandardReaderWriter {
-  unowned let pigeonRegistrar: WebKitLibraryPigeonProxyApiRegistrar
+  let pigeonRegistrar: WebKitLibraryPigeonProxyApiRegistrar
 
   private class WebKitLibraryPigeonInternalProxyApiCodecReader: WebKitLibraryPigeonCodecReader {
-    unowned let pigeonRegistrar: WebKitLibraryPigeonProxyApiRegistrar
+    let pigeonRegistrar: WebKitLibraryPigeonProxyApiRegistrar
 
     init(data: Data, pigeonRegistrar: WebKitLibraryPigeonProxyApiRegistrar) {
       self.pigeonRegistrar = pigeonRegistrar
@@ -687,7 +688,7 @@ private class WebKitLibraryPigeonInternalProxyApiCodecReaderWriter: FlutterStand
   }
 
   private class WebKitLibraryPigeonInternalProxyApiCodecWriter: WebKitLibraryPigeonCodecWriter {
-    unowned let pigeonRegistrar: WebKitLibraryPigeonProxyApiRegistrar
+    let pigeonRegistrar: WebKitLibraryPigeonProxyApiRegistrar
 
     init(data: NSMutableData, pigeonRegistrar: WebKitLibraryPigeonProxyApiRegistrar) {
       self.pigeonRegistrar = pigeonRegistrar

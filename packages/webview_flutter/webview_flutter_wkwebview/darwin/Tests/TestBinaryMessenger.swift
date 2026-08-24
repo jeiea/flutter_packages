@@ -11,14 +11,16 @@
 #endif
 
 class TestBinaryMessenger: NSObject, FlutterBinaryMessenger {
-  func send(onChannel channel: String, message: Data?) {
+  var sendHandler: (() -> Void)?
 
+  func send(onChannel channel: String, message: Data?) {
+    sendHandler?()
   }
 
   func send(
     onChannel channel: String, message: Data?, binaryReply callback: FlutterBinaryReply? = nil
   ) {
-
+    sendHandler?()
   }
 
   func setMessageHandlerOnChannel(

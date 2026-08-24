@@ -7,6 +7,26 @@ import XCTest
 @testable import webview_flutter_wkwebview
 
 class ProxyAPIRegistrarTests: XCTestCase {
+  func testCodecRetainsRegistrarAfterTearDownUntilEncodingCompletes() {
+    let messenger = TestBinaryMessenger()
+    var registrar: ProxyAPIRegistrar? = ProxyAPIRegistrar(binaryMessenger: messenger)
+    weak let weakRegistrar = registrar
+    var codec = Optional(registrar!.codec)
+
+    messenger.sendHandler = {
+      registrar!.tearDown()
+      registrar = nil
+      messenger.sendHandler = nil
+    }
+
+    let request = URLRequestWrapper(URLRequest(url: URL(string: "https://flutter.dev")!))
+    XCTAssertNotNil(codec!.encode(request))
+    XCTAssertNotNil(weakRegistrar)
+
+    codec = nil
+    XCTAssertNil(weakRegistrar)
+  }
+
   func testLogFlutterMethodFailureDoesNotThrowAnError() {
     let registrar = TestProxyApiRegistrar()
 

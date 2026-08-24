@@ -31,6 +31,20 @@ class WebViewProxyAPITests: XCTestCase {
     XCTAssertNotNil(instance)
   }
 
+  @MainActor func testObserveValueIsIgnoredAfterRegistrarIsDeallocated() {
+    var registrar: TestProxyApiRegistrar? = TestProxyApiRegistrar()
+    let api = PigeonApiWKWebView(
+      pigeonRegistrar: registrar!, delegate: WebViewProxyAPIDelegate())
+    let webView = WebViewImpl(
+      api: api, registrar: registrar!, frame: .zero, configuration: WKWebViewConfiguration())
+    weak let weakRegistrar = registrar
+
+    registrar = nil
+    XCTAssertNil(weakRegistrar)
+
+    webView.observeValue(forKeyPath: nil, of: nil, change: nil, context: nil)
+  }
+
   @MainActor func testConfiguration() {
     let registrar = TestProxyApiRegistrar()
     let api = webViewProxyAPI(forRegistrar: registrar)

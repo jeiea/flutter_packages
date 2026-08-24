@@ -6,7 +6,7 @@ import WebKit
 
 class WebViewImpl: WKWebView {
   let api: PigeonApiProtocolWKWebView
-  unowned let registrar: ProxyAPIRegistrar
+  weak var registrar: ProxyAPIRegistrar?
 
   init(
     api: PigeonApiProtocolWKWebView, registrar: ProxyAPIRegistrar, frame: CGRect,
@@ -57,6 +57,10 @@ class WebViewImpl: WKWebView {
     forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?,
     context: UnsafeMutableRawPointer?
   ) {
+    guard let registrar else {
+      return
+    }
+
     NSObjectImpl.handleObserveValue(
       withApi: (api as! PigeonApiWKWebView).pigeonApiNSObject, registrar: registrar,
       instance: self as NSObject,
