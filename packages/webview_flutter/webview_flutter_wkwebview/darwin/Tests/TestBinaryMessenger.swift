@@ -12,6 +12,7 @@
 
 class TestBinaryMessenger: NSObject, FlutterBinaryMessenger {
   var sendHandler: (() -> Void)?
+  private var messageHandlers: [String: FlutterBinaryMessageHandler] = [:]
 
   func send(onChannel channel: String, message: Data?) {
     sendHandler?()
@@ -26,10 +27,19 @@ class TestBinaryMessenger: NSObject, FlutterBinaryMessenger {
   func setMessageHandlerOnChannel(
     _ channel: String, binaryMessageHandler handler: FlutterBinaryMessageHandler? = nil
   ) -> FlutterBinaryMessengerConnection {
+    messageHandlers[channel] = handler
     return 0
   }
 
   func cleanUpConnection(_ connection: FlutterBinaryMessengerConnection) {
 
+  }
+
+  func sendToMessageHandler(onChannel channel: String, message: Data?) -> Data? {
+    var response: Data?
+    messageHandlers[channel]?(message) { reply in
+      response = reply
+    }
+    return response
   }
 }

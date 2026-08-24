@@ -7289,7 +7289,16 @@ final class PigeonApiURL: PigeonApiProtocolURL {
     if let api = api {
       getAbsoluteStringChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
-        let pigeonInstanceArg = args[0] as! URL
+        guard let pigeonInstanceArg = args[0] as? URL else {
+          reply(
+            wrapError(
+              PigeonError(
+                code: "missing-instance-error",
+                message:
+                  "Call to `URL.getAbsoluteString` failed because native instance was not in the instance manager.",
+                details: "")))
+          return
+        }
         do {
           let result = try api.pigeonDelegate.getAbsoluteString(
             pigeonApi: api, pigeonInstance: pigeonInstanceArg)

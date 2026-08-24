@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -299,6 +300,72 @@ void main() {
       );
 
       expect(callbackError.url, 'www.flutter.dev');
+    });
+
+    test('didFailProvisionalNavigation handles a missing native URL', () async {
+      PigeonOverrides.wKNavigationDelegate_new = CapturingNavigationDelegate.new;
+      final webKitDelegate = WebKitNavigationDelegate(
+        const WebKitNavigationDelegateCreationParams(),
+      );
+      final callbackCompleter = Completer<WebKitWebResourceError>();
+      await webKitDelegate.setOnWebResourceError(
+        (WebResourceError error) => callbackCompleter.complete(error as WebKitWebResourceError),
+      );
+      final mockUrl = MockURL();
+      when(mockUrl.getAbsoluteString()).thenThrow(
+        PlatformException(
+          code: 'missing-instance-error',
+          message: 'private platform message',
+          details: 'https://private.example/identifier/42',
+        ),
+      );
+      final flutterErrors = <FlutterErrorDetails>[];
+      final FlutterExceptionHandler? previousFlutterErrorHandler = FlutterError.onError;
+      FlutterError.onError = flutterErrors.add;
+      addTearDown(() => FlutterError.onError = previousFlutterErrorHandler);
+      final uncaughtErrors = <Object>[];
+
+      await runZonedGuarded(() async {
+        CapturingNavigationDelegate.lastCreatedDelegate.didFailProvisionalNavigation!(
+          WKNavigationDelegate.pigeon_detached(
+            decidePolicyForNavigationAction: (_, _, _) async {
+              return NavigationActionPolicy.cancel;
+            },
+            decidePolicyForNavigationResponse: (_, _, _) async {
+              return NavigationResponsePolicy.cancel;
+            },
+            didReceiveAuthenticationChallenge: (_, _, _) async {
+              return AuthenticationChallengeResponse.pigeon_detached(
+                disposition: UrlSessionAuthChallengeDisposition.performDefaultHandling,
+              );
+            },
+          ),
+          WKWebView.pigeon_detached(),
+          NSError.pigeon_detached(
+            code: WKErrorCode.webViewInvalidated,
+            domain: 'domain',
+            userInfo: <String, Object?>{
+              NSErrorUserInfoKey.NSURLErrorFailingURLErrorKey: mockUrl,
+              NSErrorUserInfoKey.NSLocalizedDescription: 'my desc',
+            },
+          ),
+        );
+        await pumpEventQueue();
+      }, (Object error, StackTrace stackTrace) => uncaughtErrors.add(error));
+
+      expect(uncaughtErrors, isEmpty);
+      expect((await callbackCompleter.future).url, isNull);
+      expect(flutterErrors, hasLength(1));
+      expect(
+        flutterErrors.single.context.toString(),
+        'while handling a provisional navigation failure callback',
+      );
+      expect(
+        flutterErrors.single.exceptionAsString(),
+        'A native URL proxy instance was unavailable.',
+      );
+      expect(flutterErrors.single.toString(), isNot(contains('private')));
+      expect(flutterErrors.single.toString(), isNot(contains('identifier/42')));
     });
 
     test('onWebResourceError from webViewWebContentProcessDidTerminate', () async {

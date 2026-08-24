@@ -15,6 +15,41 @@ import XCTest
 #endif
 
 class RequestProxyAPITests: XCTestCase {
+  func testURLGetAbsoluteStringMessageHandlerReturnsString() {
+    let messenger = TestBinaryMessenger()
+    let registrar = ProxyAPIRegistrar(binaryMessenger: messenger)
+    registrar.setUp()
+    defer { registrar.tearDown() }
+
+    let url = URL(string: "https://flutter.dev/path")!
+    let message = registrar.codec.encode([url])
+    let reply = messenger.sendToMessageHandler(
+      onChannel: "dev.flutter.pigeon.webview_flutter_wkwebview.URL.getAbsoluteString",
+      message: message)
+    let response = registrar.codec.decode(reply) as? [Any?]
+
+    XCTAssertEqual(response?.first as? String, url.absoluteString)
+  }
+
+  func testURLGetAbsoluteStringMessageHandlerReturnsMissingInstanceError() {
+    // This covers a manual correction to generated Swift until Pigeon safely rejects missing
+    // host-call proxy arguments. https://github.com/flutter/flutter/issues/191254 tracks the same
+    // lifetime class; https://github.com/flutter/packages/pull/12531 guards the opposite direction.
+    // Remove the correction only after the generated handler returns this error itself.
+    let messenger = TestBinaryMessenger()
+    let registrar = ProxyAPIRegistrar(binaryMessenger: messenger)
+    registrar.setUp()
+    defer { registrar.tearDown() }
+
+    let message = missingURLCodec.encode([MissingURL(identifier: 42)])
+    let reply = messenger.sendToMessageHandler(
+      onChannel: "dev.flutter.pigeon.webview_flutter_wkwebview.URL.getAbsoluteString",
+      message: message)
+    let response = registrar.codec.decode(reply) as? [Any?]
+
+    XCTAssertEqual(response?.first as? String, "missing-instance-error")
+  }
+
   func testPigeonDefaultConstructor() {
     let registrar = TestProxyApiRegistrar()
     let api = registrar.apiDelegate.pigeonApiURLRequest(registrar)
@@ -106,3 +141,31 @@ class RequestProxyAPITests: XCTestCase {
     XCTAssertEqual(value, fields)
   }
 }
+
+private final class MissingURL {
+  let identifier: Int64
+
+  init(identifier: Int64) {
+    self.identifier = identifier
+  }
+}
+
+private class MissingURLCodecWriter: FlutterStandardWriter {
+  override func writeValue(_ value: Any) {
+    if let missingURL = value as? MissingURL {
+      super.writeByte(128)
+      super.writeValue(missingURL.identifier)
+    } else {
+      super.writeValue(value)
+    }
+  }
+}
+
+private class MissingURLCodecReaderWriter: FlutterStandardReaderWriter {
+  override func writer(with data: NSMutableData) -> FlutterStandardWriter {
+    return MissingURLCodecWriter(data: data)
+  }
+}
+
+private let missingURLCodec = FlutterStandardMessageCodec(
+  readerWriter: MissingURLCodecReaderWriter())

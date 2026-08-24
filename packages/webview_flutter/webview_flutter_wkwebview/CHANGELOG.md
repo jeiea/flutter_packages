@@ -1,3 +1,7 @@
+## 3.26.1
+
+* Prevents a crash when a native URL proxy is no longer available during a callback.
+
 ## 3.26.0
 
 * Adds new method for accessing a native `WKWebView` from a `FlutterPluginRegistrar`.

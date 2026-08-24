@@ -1284,6 +1284,72 @@ void main() {
       expect(urlChange.url, 'https://www.google.com');
     });
 
+    test('setPlatformNavigationDelegate onUrlChange handles a missing native URL', () async {
+      final mockWebView = MockUIViewWKWebView();
+      late final void Function(
+        NSObject,
+        String? keyPath,
+        NSObject? object,
+        Map<KeyValueChangeKey, Object>? change,
+      )
+      webViewObserveValue;
+      final WebKitWebViewController controller = createControllerWithMocks(
+        createMockWebView:
+            (
+              WKWebViewConfiguration configuration, {
+              void Function(
+                NSObject,
+                String? keyPath,
+                NSObject? object,
+                Map<KeyValueChangeKey, Object>? change,
+              )?
+              observeValue,
+            }) {
+              webViewObserveValue = observeValue!;
+              return mockWebView;
+            },
+      );
+      PigeonOverrides.wKNavigationDelegate_new = CapturingNavigationDelegate.new;
+      final navigationDelegate = WebKitNavigationDelegate(
+        const WebKitNavigationDelegateCreationParams(),
+      );
+      final urlChangeCompleter = Completer<UrlChange>();
+      await navigationDelegate.setOnUrlChange(urlChangeCompleter.complete);
+      await controller.setPlatformNavigationDelegate(navigationDelegate);
+
+      final mockUrl = MockURL();
+      when(mockUrl.getAbsoluteString()).thenThrow(
+        PlatformException(
+          code: 'missing-instance-error',
+          message: 'private platform message',
+          details: 'https://private.example/identifier/42',
+        ),
+      );
+      final flutterErrors = <FlutterErrorDetails>[];
+      final FlutterExceptionHandler? previousFlutterErrorHandler = FlutterError.onError;
+      FlutterError.onError = flutterErrors.add;
+      addTearDown(() => FlutterError.onError = previousFlutterErrorHandler);
+      final uncaughtErrors = <Object>[];
+
+      await runZonedGuarded(() async {
+        webViewObserveValue(mockWebView, 'URL', mockWebView, <KeyValueChangeKey, Object>{
+          KeyValueChangeKey.newValue: mockUrl,
+        });
+        await pumpEventQueue();
+      }, (Object error, StackTrace stackTrace) => uncaughtErrors.add(error));
+
+      expect(uncaughtErrors, isEmpty);
+      expect((await urlChangeCompleter.future).url, isNull);
+      expect(flutterErrors, hasLength(1));
+      expect(flutterErrors.single.context.toString(), 'while handling a URL change callback');
+      expect(
+        flutterErrors.single.exceptionAsString(),
+        'A native URL proxy instance was unavailable.',
+      );
+      expect(flutterErrors.single.toString(), isNot(contains('private')));
+      expect(flutterErrors.single.toString(), isNot(contains('identifier/42')));
+    });
+
     test('setPlatformNavigationDelegate onUrlChange to null NSUrl', () async {
       final mockWebView = MockUIViewWKWebView();
 

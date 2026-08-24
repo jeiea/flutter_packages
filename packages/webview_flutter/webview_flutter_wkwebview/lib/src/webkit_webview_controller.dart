@@ -12,6 +12,7 @@ import 'package:path/path.dart' as path;
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
 import 'common/platform_webview.dart';
+import 'common/url_utils.dart';
 import 'common/weak_reference_utils.dart';
 import 'common/web_kit.g.dart';
 import 'common/webkit_constants.dart';
@@ -298,7 +299,13 @@ class WebKitWebViewController extends PlatformWebViewController {
                 controller._currentNavigationDelegate?._onUrlChange;
             if (urlChangeCallback != null) {
               final url = change[KeyValueChangeKey.newValue] as URL?;
-              urlChangeCallback(UrlChange(url: await url?.getAbsoluteString()));
+              urlChangeCallback(
+                UrlChange(
+                  url: url == null
+                      ? null
+                      : await getAbsoluteStringOrNull(url, URLCallbackType.urlChange),
+                ),
+              );
             }
           case 'canGoBack':
             if (controller._onCanGoBackChangeCallback != null) {
@@ -1144,7 +1151,12 @@ class WebKitNavigationDelegate extends PlatformNavigationDelegate {
         // On iOS 26+, the error is stored with `NSURLErrorFailingURLErrorKey`.
         if (url == null) {
           final nativeURL = error.userInfo[NSErrorUserInfoKey.NSURLErrorFailingURLErrorKey] as URL?;
-          url = await nativeURL?.getAbsoluteString();
+          url = nativeURL == null
+              ? null
+              : await getAbsoluteStringOrNull(
+                  nativeURL,
+                  URLCallbackType.provisionalNavigationFailure,
+                );
         }
 
         if (weakThis.target?._onWebResourceError != null) {
